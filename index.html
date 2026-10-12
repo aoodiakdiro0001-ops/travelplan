@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TripPlan | Travel Budget & Itinerary Planner</title>
+<meta name="description" content="Pick a destination, days and style — get daily budget breakdown and a ready day-by-day itinerary.">
+<link rel="canonical" href="https://aoodiakdiro0001-ops.github.io/travelplan/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0b0e14">
+<meta property="og:type" content="website">
+<meta property="og:title" content="TripPlan | Travel Planner">
+<meta property="og:description" content="Budget + itinerary in seconds.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Consolas,monospace}
+:root{--bg:#0b0e14;--panel:#141b2e;--line:#2a3557;--grn:#34d399;--gold:#fbbf24;--blu:#60a5fa;--txt:#e0e6f2;--mut:#8b98b8;--sky:#38bdf8}
+body{background:var(--bg);color:var(--txt)}
+header{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.logo{font-size:22px;font-weight:900;color:var(--sky)}
+.logo small{display:block;font-size:11px;color:var(--mut);font-weight:400}
+header select{margin-left:auto;background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:14px;padding:7px 10px;font-size:13px}
+.tabs{display:flex;gap:6px;padding:14px 16px 0;flex-wrap:wrap;max-width:1100px;margin:0 auto}
+.tabs button{background:var(--panel);color:var(--txt);border:1px solid var(--line);border-bottom:none;padding:10px 16px;border-radius:12px 12px 0 0;cursor:pointer;font-weight:800;font-size:13px}
+.tabs button.on{background:#1a2547;color:var(--sky)}
+main{max-width:1100px;margin:0 auto;padding:18px 15px 60px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:0 14px 14px 14px;padding:22px;display:none}
+.panel.on{display:block}
+.panel h2{color:var(--sky);margin-bottom:6px;font-size:19px}
+.panel p.sub{color:var(--mut);font-size:13px;margin-bottom:12px;line-height:1.7}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+.box{background:#0b0e14;border:1px solid var(--line);border-radius:14px;padding:16px}
+.box h3{font-size:14px;color:var(--blu);margin-bottom:10px}
+label.fl{display:block;font-size:12.5px;color:var(--mut);margin:8px 0 3px}
+input[type=text],input[type=number],select{background:#0b0e14;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:10px 13px;font-size:14px;outline:none;width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center}
+button.go{background:var(--sky);color:#04121c;border:none;padding:11px 26px;border-radius:10px;font-weight:900;cursor:pointer;font-size:14px}
+button.alt{background:transparent;color:var(--blu);border:1px solid var(--blu);padding:9px 16px;border-radius:10px;cursor:pointer;font-size:13px}
+table.bt{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+table.bt th,table.bt td{border-bottom:1px solid var(--line);padding:8px 7px;text-align:left}
+table.bt th{color:var(--sky);font-size:12px}
+table.bt td.n{text-align:right;font-variant-numeric:tabular-nums}
+.day{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;font-size:13px;background:#0b0e14}
+.day b.dh{color:var(--gold);font-size:14px}
+.day ul{margin:8px 0 0 18px;line-height:1.9}
+.day .cost{float:right;color:var(--grn);font-weight:800}
+.res{background:#0b0e14;border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0;font-size:14px;line-height:2}
+.res b.big{font-size:22px;color:var(--gold)}
+.note{background:#1a2547;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--mut);margin:10px 0;line-height:1.7}
+.affgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px}
+.aff{background:#0b0e14;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;font-size:13px}
+.aff b{display:block;font-size:15px;margin-bottom:4px}
+.aff small{color:var(--mut);display:block;margin-bottom:10px}
+.aff a{background:var(--grn);color:#06281c;font-weight:800;text-decoration:none;font-size:13px;padding:9px 20px;border-radius:12px;display:inline-block;margin:2px}
+.refbadge{font-size:10px;font-weight:900;background:var(--gold);color:#231a03;border-radius:8px;padding:2px 7px;margin-left:6px}
+.donate{background:linear-gradient(135deg,#1a2547,#0e2a1d);border:1px solid var(--grn);border-radius:16px;padding:20px;text-align:center;margin-top:8px;font-size:13px}
+.donate .addr{background:#0b0e14;border-radius:10px;padding:10px;font-family:monospace;font-size:12px;word-break:break-all;direction:ltr;margin:6px auto;color:var(--grn);max-width:560px}
+.hist{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.adslot{max-width:1100px;margin:12px auto 0;padding:0 15px;text-align:center}
+.adslot .ph{display:block;border:1px dashed var(--line);border-radius:10px;color:var(--mut);font-size:12px;padding:10px}
+footer{text-align:center;color:var(--mut);font-size:12.5px;padding:26px 16px;border-top:1px solid var(--line);line-height:2}
+footer a{color:var(--grn)}
+#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:12px 25px;border-radius:25px;z-index:200;display:none;font-size:14px;max-width:92vw;text-align:center}
+@media print{body>*{display:none!important}#printArea{display:block!important;color:#000}#printArea table{width:100%;border-collapse:collapse}#printArea td,#printArea th{border:1px solid #999;padding:6px;font-size:12px}}
+#printArea{display:none}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">✈️ TripPlan<small data-i="tag"></small></div>
+<select id="langSel" onchange="setLang(this.value)">
+<option value="en" selected>🇬🇧 English</option><option value="tr">🇹🇷 Türkçe</option><option value="ar">🇸🇦 العربية</option>
+</select>
+</header>
+<div class="tabs" id="tabs"></div>
+<main>
+<section class="panel on" id="p-plan">
+<h2 data-i="pT"></h2><p class="sub" data-i="pS"></p>
+<div class="grid2">
+<div class="box"><h3 data-i="inT"></h3>
+<label class="fl" data-i="fDest"></label><select id="cDest"></select>
+<label class="fl" data-i="fDays"></label><input type="number" id="cDays" value="5" min="1" max="30">
+<label class="fl" data-i="fTrav"></label><input type="number" id="cTrav" value="2" min="1" max="12">
+<label class="fl" data-i="fStyle"></label><select id="cStyle"><option value="budget" data-i="sB"></option><option value="mid" data-i="sM" selected></option><option value="luxury" data-i="sL"></option><option value="family" data-i="sF"></option></select>
+<label class="fl" data-i="fFlight"></label><input type="number" id="cFlight" value="350" step="any">
+<label class="fl" data-i="fCur"></label><select id="cCur"><option value="USD">$ USD</option><option value="EUR">€ EUR</option><option value="TRY">₺ TRY</option></select>
+<div class="row"><button class="go" onclick="plan()" data-i="btnPlan"></button><button class="alt" onclick="savePlan()" data-i="btnSave"></button><button class="alt" onclick="printPlan()" data-i="btnPrint"></button></div>
+</div>
+<div class="box"><h3 data-i="outT"></h3><div id="planRes">—</div></div>
+</div>
+<div id="itinOut"></div>
+<div class="note" data-i="estNote"></div>
+</section>
+<section class="panel" id="p-hist">
+<h2 data-i="hT"></h2><p class="sub" data-i="hS"></p>
+<div id="histList"></div>
+</section>
+<section class="panel" id="p-book">
+<h2 data-i="bT"></h2><p class="sub" data-i="bS"></p>
+<div class="affgrid" id="affGrid"></div>
+</section>
+<section class="panel" id="p-donate">
+<h2 data-i="doT"></h2><p class="sub" data-i="doS"></p>
+<div class="donate">
+<div>₿ BTC</div><div class="addr" id="btcA"></div>
+<div>₮ USDT-TRC20</div><div class="addr" id="usdtA"></div>
+<div class="row" style="justify-content:center"><button class="alt" onclick="copyTxt(document.getElementById('btcA').textContent)" data-i="btnCopy"></button></div>
+<div style="font-size:12.5px">🏦 Baran Avisat — TRY: <code dir="ltr">TR10 0001 0090 1008 4013 0050 01</code></div>
+<div style="font-size:12.5px">🏦 Baran Avisat — USD: <code dir="ltr">TR80 0001 0090 1008 4013 0050 02</code></div>
+</div>
+</section>
+</main>
+<div id="printArea"></div>
+<div class="adslot" id="adFoot"><span class="ph" data-i="adHere" style="display:block;border:1px dashed var(--line);border-radius:10px;color:var(--mut);font-size:12px;padding:10px"></span></div>
+<footer><span data-i="foot"></span><br>📧 <a href="mailto:baranavisat@gmail.com">baranavisat@gmail.com</a> · 📞 <a href="tel:+905313263722" dir="ltr">+90 531 326 37 22</a> · <a href="https://wa.me/905313263722" target="_blank" rel="noopener">WhatsApp</a><br><a href="README.md" target="_blank">README</a> · MIT</footer>
+<div id="toast"></div>
+<script>
+const CONFIG={ads:{client:'',slot:'',carbonServe:'',carbonPlacement:''},
+pay:{btc:'bc1q8dhtdrndxsl70e97t8grydfe6pjue37zrhzf6c',usdt:'TLWdTjqqogkXNEXGiPWsGdjFP6ioycxeWW'},
+fx:{USD:1,EUR:0.925,TRY:49.26},
+aff:{booking:'',skyscanner:'',gyg:''}};
+const DESTS=[
+{id:'istanbul',n:{en:'Istanbul',tr:'İstanbul',ar:'إسطنبول'},flight:0,hotel:{budget:25,mid:70,luxury:250,family:120},food:{budget:15,mid:35,luxury:90,family:50},trans:{budget:6,mid:12,luxury:40,family:20},act:{budget:10,mid:25,luxury:60,family:35},spots:['Hagia Sophia','Blue Mosque','Topkapi Palace','Grand Bazaar','Bosphorus Cruise','Galata Tower','Basilica Cistern']},
+{id:'dubai',n:{en:'Dubai',tr:'Dubai',ar:'دبي'},flight:350,hotel:{budget:60,mid:150,luxury:500,family:220},food:{budget:25,mid:60,luxury:150,family:80},trans:{budget:10,mid:25,luxury:80,family:35},act:{budget:20,mid:50,luxury:120,family:70},spots:['Burj Khalifa','Dubai Mall','Palm Jumeirah','Desert Safari','Dubai Marina','Miracle Garden']},
+{id:'kl',n:{en:'Kuala Lumpur',tr:'Kuala Lumpur',ar:'كوالالمبور'},flight:700,hotel:{budget:20,mid:55,luxury:200,family:90},food:{budget:10,mid:25,luxury:70,family:35},trans:{budget:5,mid:10,luxury:35,family:15},act:{budget:8,mid:20,luxury:50,family:28},spots:['Petronas Towers','Batu Caves','KL Tower','Merdeka Square','Central Market']},
+{id:'paris',n:{en:'Paris',tr:'Paris',ar:'باريس'},flight:300,hotel:{budget:80,mid:180,luxury:550,family:260},food:{budget:30,mid:70,luxury:160,family:95},trans:{budget:10,mid:20,luxury:60,family:28},act:{budget:15,mid:35,luxury:90,family:50},spots:['Eiffel Tower','Louvre Museum','Notre-Dame','Champs-Élysées','Montmartre']},
+{id:'bali',n:{en:'Bali',tr:'Bali',ar:'بالي'},flight:800,hotel:{budget:25,mid:70,luxury:300,family:110},food:{budget:12,mid:30,luxury:90,family:42},trans:{budget:8,mid:18,luxury:60,family:25},act:{budget:12,mid:30,luxury:80,family:40},spots:['Uluwatu Temple','Tanah Lot','Ubud Monkey Forest','Tegallalang Rice Terrace','Seminyak Beach']},
+{id:'cappa',n:{en:'Cappadocia',tr:'Kapadokya',ar:'كابادوكيا'},flight:100,hotel:{budget:30,mid:80,luxury:280,family:120},food:{budget:12,mid:30,luxury:80,family:40},trans:{budget:8,mid:20,luxury:70,family:28},act:{budget:15,mid:60,luxury:200,family:80},spots:['Hot Air Balloon','Göreme Open Air Museum','Derinkuyu Underground City','Love Valley','Uçhisar Castle']},
+{id:'antalya',n:{en:'Antalya',tr:'Antalya',ar:'أنطاليا'},flight:80,hotel:{budget:30,mid:90,luxury:320,family:130},food:{budget:12,mid:30,luxury:85,family:42},trans:{budget:6,mid:14,luxury:50,family:20},act:{budget:10,mid:28,luxury:75,family:38},spots:['Kaleiçi Old Town','Düden Waterfalls','Konyaaltı Beach','Aspendos Theatre','Köprülü Canyon']},
+{id:'london',n:{en:'London',tr:'Londra',ar:'لندن'},flight:320,hotel:{budget:90,mid:200,luxury:600,family:300},food:{budget:30,mid:70,luxury:170,family:100},trans:{budget:12,mid:25,luxury:70,family:32},act:{budget:12,mid:30,luxury:80,family:42},spots:['Big Ben & Westminster','Tower of London','British Museum','London Eye','Camden Market']},
+{id:'maldives',n:{en:'Maldives',tr:'Maldivler',ar:'المالديف'},flight:600,hotel:{budget:100,mid:300,luxury:1200,family:450},food:{budget:30,mid:80,luxury:250,family:120},trans:{budget:15,mid:40,luxury:150,family:60},act:{budget:25,mid:70,luxury:200,family:100},spots:['Sandbank Trip','Diving Safari','Maafushi Island','Sunset Dolphin Cruise','Hulhumale Beach']}];
+const AFFS=[
+{k:'booking',n:'Booking.com',d:'Hotels worldwide',u:q=>'https://www.booking.com/searchresults.html?ss='+encodeURIComponent(q)},
+{k:'skyscanner',n:'Skyscanner',d:'Cheap flights',u:q=>'https://www.skyscanner.com'},
+{k:'gyg',n:'GetYourGuide',d:'Tours & tickets',u:q=>'https://www.getyourguide.com/s/?q='+encodeURIComponent(q)}];
+const T={
+en:{tag:'Budget + day-by-day itinerary in seconds',tabP:'✈️ Planner',tabH:'📚 Trips',tabB:'🎫 Book',tabDo:'💚 Donate',
+pT:'✈️ Travel Planner',pS:'Destination + days + style → daily budget and a ready itinerary. Prices are 2026 estimates.',
+inT:'Trip',outT:'Budget',fDest:'Destination',fDays:'Days',fTrav:'Travelers',fStyle:'Style',sB:'Budget',sM:'Mid-range',sL:'Luxury',sF:'Family',fFlight:'Flight RT / person (USD, 0=none)',fCur:'Currency',btnPlan:'Plan trip',btnSave:'Save',btnPrint:'Print',
+estNote:'Hotel/food/transport/activity rates are indicative per-person daily averages. Verify live prices when booking.',
+hT:'📚 Saved Trips',hS:'Stored in this browser only.',
+bT:'🎫 Book & Save',bS:'REF links earn us a commission at the same price for you.',
+doT:'💚 Support TripPlan',doS:'Free forever.',
+btnCopy:'Copy',adHere:'Travel & airline ads here',foot:'TripPlan — free planner. Estimates, verify live prices.',
+copied:'Copied ✅',needNum:'Enter valid trip details ⚠️',saved:'Saved ✅',
+cHotel:'Hotel',cFood:'Food',cTrans:'Transport',cAct:'Activities',cFlight:'Flights',cTot:'TOTAL TRIP',cDay:'per day',dayL:'Day',arrL:'Arrival + light tour',depL:'Departure + souvenirs',restL:'Slow morning, free afternoon',spotsL:'spots'},
+tr:{tag:'Saniyeler içinde bütçe + günlük rota',tabP:'✈️ Planlayıcı',tabH:'📚 Geziler',tabB:'🎫 Rezervasyon',tabDo:'💚 Destek',
+pT:'✈️ Seyahat Planlayıcı',pS:'Rota + gün + tarz → günlük bütçe ve hazır program. Fiyatlar 2026 tahminidir.',
+inT:'Seyahat',outT:'Bütçe',fDest:'Rota',fDays:'Gün',fTrav:'Kişi',fStyle:'Tarz',sB:'Ekonomik',sM:'Orta',sL:'Lüks',sF:'Aile',fFlight:'Uçak gidiş-dönüş / kişi (USD, 0=yok)',fCur:'Para birimi',btnPlan:'Planla',btnSave:'Kaydet',btnPrint:'Yazdır',
+estNote:'Otel/yemek/ulaşım oranları kişi başı günlük ortalamadır. Rezervasyonda güncel fiyatları doğrulayın.',
+hT:'📚 Kayıtlı Geziler',hS:'Yalnızca bu tarayıcıda.',
+bT:'🎫 Rezervasyon & Tasarruf',bS:'REF bağlantılar bize kazandırır, size aynı fiyat.',
+doT:'💚 Destekle',doS:'Sonsuza dek ücretsiz.',
+btnCopy:'Kopyala',adHere:'Seyahat reklamları burada',foot:'TripPlan — ücretsiz planlayıcı. Tahminidir.',
+copied:'Kopyalandı ✅',needNum:'Geçerli bilgiler girin ⚠️',saved:'Kaydedildi ✅',
+cHotel:'Otel',cFood:'Yemek',cTrans:'Ulaşım',cAct:'Aktivite',cFlight:'Uçak',cTot:'TOPLAM',cDay:'günlük',dayL:'Gün',arrL:'Varış + hafif tur',depL:'Dönüş + hediyelik',restL:'Sakin sabah, serbest öğleden sonra',spotsL:'durak'},
+ar:{tag:'ميزانية وبرنامج يومي بثوانٍ',tabP:'✈️ المخطط',tabH:'📚 الرحلات',tabB:'🎫 احجز',tabDo:'💚 ادعم',
+pT:'✈️ مخطط السفر',pS:'الوجهة + الأيام + النمط ← ميزانية يومية وبرنامج جاهز. الأسعار تقديرات 2026.',
+inT:'الرحلة',outT:'الميزانية',fDest:'الوجهة',fDays:'الأيام',fTrav:'المسافرون',fStyle:'النمط',sB:'اقتصادي',sM:'متوسط',sL:'فاخر',sF:'عائلي',fFlight:'الطيران ذهاب وعودة / شخص (دولار، 0=لا)',fCur:'العملة',btnPlan:'خطط',btnSave:'احفظ',btnPrint:'اطبع',
+estNote:'الأسعار متوسطات يومية للشخص. تحقق من الأسعار الحية عند الحجز.',
+hT:'📚 الرحلات المحفوظة',hS:'في هذا المتصفح فقط.',
+bT:'🎫 احجز ووفّر',bS:'روابط REF تكسبنا بنفس السعر لك.',
+doT:'💚 ادعم TripPlan',doS:'مجاني للأبد.',
+btnCopy:'نسخ',adHere:'إعلانات السفر هنا',foot:'TripPlan — مخطط مجاني. تقديرات فقط.',
+copied:'تم ✅',needNum:'أدخل بيانات صالحة ⚠️',saved:'حُفظ ✅',
+cHotel:'الفندق',cFood:'الطعام',cTrans:'المواصلات',cAct:'الأنشطة',cFlight:'الطيران',cTot:'الإجمالي',cDay:'يومياً',dayL:'اليوم',arrL:'الوصول + جولة خفيفة',depL:'المغادرة + هدايا',restL:'صباح هادئ وظهيرة حرة',spotsL:'محطات'}};
+let lang='en',curPlan=null;
+const t=k=>(T[lang]&&T[lang][k])||T.en[k]||k;
+function setLang(v){lang=v;document.documentElement.lang=v;document.documentElement.dir=(v==='ar')?'rtl':'ltr';document.getElementById('langSel').value=v;
+document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=t(e.dataset.i);});
+buildTabs();buildDest();renderAff();renderHist();renderDonate();}
+const TABS=[['plan','tabP'],['hist','tabH'],['book','tabB'],['donate','tabDo']];
+function buildTabs(){document.getElementById('tabs').innerHTML=TABS.map(x=>`<button id="tab-${x[0]}" onclick="tab('${x[0]}')">${t(x[1])}</button>`).join('');document.getElementById('tab-plan').classList.add('on');}
+function tab(w){TABS.forEach(x=>{const b=document.getElementById('tab-'+x[0]);if(b)b.classList.toggle('on',w===x[0]);document.getElementById('p-'+x[0]).classList.toggle('on',w===x[0]);});}
+function toast(m){let d=document.getElementById('toast');d.textContent=m;d.style.display='block';clearTimeout(d._h);d._h=setTimeout(()=>d.style.display='none',2200);}
+function copyTxt(x){try{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(x);}catch(e){}toast(t('copied'));}
+function num(id,d){const v=parseFloat((document.getElementById(id)||{}).value);return isNaN(v)?(d||0):v;}
+function dName(d){return (d.n[lang]||d.n.en);}
+function fmt(n,cur){const r=CONFIG.fx[cur]||1;const v=n*r;const s=v>=100?Math.round(v).toLocaleString('en-US'):Math.round(v);const sym={USD:'$',EUR:'€',TRY:'₺'}[cur]||'';return s+' '+sym;}
+function buildDest(){document.getElementById('cDest').innerHTML=DESTS.map((d,i)=>`<option value="${i}">${dName(d)}</option>`).join('');}
+function budget(o){
+const d=DESTS[o.dest],s=o.style;
+const per={hotel:d.hotel[s],food:d.food[s],trans:d.trans[s],act:d.act[s]};
+const day=per.hotel+per.food+per.trans+per.act;
+const days=o.days,trav=o.trav;
+const stay=day*days*trav,flights=(o.flight||d.flight)*trav;
+return {d,per,day,stay,flights,tot:stay+flights};
+}
+function itinerary(o){
+const arr=DESTS[o.dest].spots,N=arr.length;
+const days=[];let si=0;
+const take=n=>{const out=[];for(let i=0;i<n;i++){out.push(arr[si%N]);si++;}return out;};
+for(let d=1;d<=o.days;d++){
+let label='',n=3;
+if(d===1){label=t('arrL');n=2;}
+else if(d===o.days&&o.days>1){label=t('depL');n=2;}
+else if(o.days>=5&&d%4===0){label=t('restL');n=1;}
+days.push({d,label,spots:take(n)});
+}
+return days;
+}
+function plan(){
+const o={dest:+document.getElementById('cDest').value||0,days:Math.max(1,Math.min(30,Math.round(num('cDays',5)))),trav:Math.max(1,Math.min(12,Math.round(num('cTrav',2)))),style:document.getElementById('cStyle').value,flight:num('cFlight'),cur:document.getElementById('cCur').value};
+if(!(o.days>=1)){toast(t('needNum'));return;}
+const b=budget(o),it=itinerary(o);
+curPlan={o,b,it,time:new Date().toLocaleString()};
+const per=b.per;
+document.getElementById('planRes').innerHTML=`<b class="big">${fmt(b.tot,o.cur)}</b> <small>(${fmt(b.day*o.trav,o.cur)} ${t('cDay')})</small><table class="bt"><tr><td>${t('cHotel')}</td><td class="n">${fmt(per.hotel*o.days*o.trav,o.cur)}</td></tr><tr><td>${t('cFood')}</td><td class="n">${fmt(per.food*o.days*o.trav,o.cur)}</td></tr><tr><td>${t('cTrans')}</td><td class="n">${fmt(per.trans*o.days*o.trav,o.cur)}</td></tr><tr><td>${t('cAct')}</td><td class="n">${fmt(per.act*o.days*o.trav,o.cur)}</td></tr><tr><td>${t('cFlight')}</td><td class="n">${fmt(b.flights,o.cur)}</td></tr><tr><td><b>${t('cTot')}</b></td><td class="n"><b>${fmt(b.tot,o.cur)}</b></td></tr></table>`;
+document.getElementById('itinOut').innerHTML=it.map(x=>`<div class="day"><b class="dh">${t('dayL')} ${x.d}</b><span class="cost">${fmt(b.day*o.trav,o.cur)}</span><br><small style="color:var(--mut)">${x.label}</small><ul>${x.spots.map(s=>`<li>${s}</li>`).join('')}</ul><small style="color:var(--mut)">${x.spots.length} ${t('spotsL')}</small></div>`).join('');
+renderAff();
+return b;
+}
+function hist(){try{return JSON.parse(localStorage.getItem('tp_hist')||'[]');}catch(e){return [];}
+}
+function savePlan(){if(!curPlan)plan();if(!curPlan)return;try{const h=hist();h.unshift({d:curPlan.o.dest,days:curPlan.o.days,trav:curPlan.o.trav,tot:Math.round(curPlan.b.tot),time:curPlan.time});localStorage.setItem('tp_hist',JSON.stringify(h.slice(0,50)));}catch(e){}renderHist();toast(t('saved'));}
+function renderHist(){const h=hist();document.getElementById('histList').innerHTML=h.map((x,i)=>{const d=DESTS[x.d]||DESTS[0];return `<div class="hist"><b style="flex:1">${dName(d)} · ${x.days}d · ${x.trav}pax</b><b>$${Math.round(x.tot).toLocaleString('en-US')}</b><small style="color:var(--mut)">${x.time||''}</small><button class="alt" style="padding:5px 12px;font-size:12px" onclick="delHist(${i})">❌</button></div>`;}).join('')||'<p style="color:var(--mut)">—</p>';}
+function delHist(i){try{const h=hist();h.splice(i,1);localStorage.setItem('tp_hist',JSON.stringify(h));}catch(e){}renderHist();}
+function printPlan(){if(!curPlan)plan();if(!curPlan)return;const b=curPlan.b,o=curPlan.o;
+document.getElementById('printArea').innerHTML=`<h2>TripPlan — ${dName(b.d)} ${o.days}d</h2><table>${['cHotel','cFood','cTrans','cAct'].map((k,i)=>`<tr><td>${t(k)}</td><td>${[b.per.hotel,b.per.food,b.per.trans,b.per.act][i]*o.days*o.trav} USD</td></tr>`).join('')}<tr><td><b>Total</b></td><td><b>${Math.round(b.tot)} USD</b></td></tr></table>`;window.print();}
+function affFor(k,q){const a=AFFS.find(x=>x.k===k);const base=(CONFIG.aff&&CONFIG.aff[k])||(a?a.u(q):'#');return base;}
+function isAff(k){return !!(CONFIG.aff&&CONFIG.aff[k]);}
+function renderAff(){
+const d=DESTS[+document.getElementById('cDest').value||0]||DESTS[0];
+const q=dName(d);
+document.getElementById('affGrid').innerHTML=AFFS.map(a=>`<div class="aff"><b>${a.n}${isAff(a.k)?'<span class="refbadge">REF</span>':''}</b><small>${a.d} — ${q}</small><br><a target="_blank" rel="nofollow sponsored noopener" href="${affFor(a.k,q)}">→</a></div>`).join('');
+}
+function renderDonate(){
+document.getElementById('btcA').textContent=CONFIG.pay.btc;
+document.getElementById('usdtA').textContent=CONFIG.pay.usdt;
+}
+function loadAds(){const A=CONFIG.ads,el=document.getElementById('adFoot');if(!el)return;
+if(A.client){el.innerHTML='<ins class="adsbygoogle" style="display:block" data-ad-client="'+A.client+'" data-ad-slot="'+(A.slot||'')+'" data-ad-format="auto"></ins>';
+if(!document.querySelector('script[src*="adsbygoogle"]')){const s=document.createElement('script');s.async=true;s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+A.client;s.crossOrigin='anonymous';document.head.appendChild(s);}try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}}
+else if(A.carbonServe){el.innerHTML='';const s=document.createElement('script');s.async=true;s.id='_carbonads_js';s.src='//cdn.carbonads.com/carbon.js?serve='+A.carbonServe+'&placement='+A.carbonPlacement;el.appendChild(s);}}
+setLang('en');loadAds();renderDonate();
+</script>
+</body>
+</html>
